@@ -1,5 +1,21 @@
 <% if logged_in? %>
-  <p>ログイン完了ユーザー: <%= current_user.name %></p>
+  <div class="row">
+    <aside class="col-md-4">
+      <%= form_for(@task) do |f| %>
+        <div class="form-group">
+          <%= f.label :content, 'Task' %>
+          <%= f.text_area :content, class: 'form-control', rows: 5 %>
+        </div>        
+        <div class="form-group">
+          <%= f.label :status, 'Status' %>
+          <%= f.text_area :status, class: 'form-control', rows: 1 %>
+        </div>
+        <%= f.submit 'Post', class: 'btn btn-primary btn-block' %>
+      <% end %>
+    </aside>
+    <div class="col-xs-8">
+      <%= render 'tasks/tasks', tasks: @tasks, user: @user %>
+    </div>
 <% else %>
 <div class="center jumbotron">
   <div class="text-center">
