@@ -18,3 +18,8 @@
   </ul>
   <%= paginate users %>
 <% end %>
+
+edit.html.erb
+<h1>タスク編集ページ</h1>
+
+<%= render 'form', task: @task %>

@@ -1,16 +1,13 @@
 class TasksController < ApplicationController
   before_action :require_user_logged_in
-  before_action :correct_user, only: [:destroy]
-  
-  def index
-    @tasks = Task.all
-  end
+  before_action :correct_user, only: [:update, :destroy]
   
   def show
+    set_task
   end
-  
+   
   def new
-    @task = Task.new
+    @task = current_user.tasks.build
   end
   
   def create
@@ -26,18 +23,19 @@ class TasksController < ApplicationController
   end
   
   def edit
+    set_task
   end
   
-  # def update
-    
-  #   if @task.update(task_params)
-  #     flash[:success] = 'タスクは正常に修正されました'
-  #     redirect_to @task
-  #   else
-  #     flash.now[:danger] ='タスクは正常に修正されませんでした。'
-  #     render :edit
-  #   end
-  # end
+  def update
+    set_task
+    if @task.update(task_params)
+      flash[:success] = 'タスクは正常に修正されました'
+      redirect_to root_path
+    else
+      flash.now[:danger] ='タスクは正常に修正されませんでした。'
+      render :edit
+    end
+  end
   
   def destroy
     @task.destroy
@@ -49,7 +47,7 @@ class TasksController < ApplicationController
   private
   
   def set_task
-    @task =Task.find(params[:id])
+    @task = current_user.tasks.find_by(id: params[:id])
   end
   
   def task_params
