@@ -6,12 +6,8 @@ class UsersController < ApplicationController
 
   def show
     @user = User.find(params[:id])
-    if @user == current_user
     @tasks = @user.tasks.order('created_at DESC').page(params[:page])
     counts @user
-    else
-      render root_path
-    end
   end
 
   def new
