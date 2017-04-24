@@ -1,11 +1,11 @@
 class UsersController < ApplicationController
   before_action :require_user_logged_in, only: [:index, :show]
-  def index
-     @users = User.all.page(params[:page])
-  end
+  # def index
+  #   @users = User.all.page(params[:page])
+  # end
 
   def show
-    @user = User.find(params[:id])
+    @user = User.find_by(id: session[:user_id])
     @tasks = @user.tasks.order('created_at DESC').page(params[:page])
     counts @user
   end
@@ -29,7 +29,14 @@ end
 
 private
 
-def user_params
-  params.require(:user).permit(:name, :email, :password, :password_confirmation)
-end
+  def user_params
+    params.require(:user).permit(:name, :email, :password, :password_confirmation)
+  end
+  
+  def correct_user
+    @task = current_user.tasks.find_by(id: params[:id])
+    unless @task
+    redirect_to root_path
+    end
+  end
 
