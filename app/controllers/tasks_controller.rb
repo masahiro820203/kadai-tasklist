@@ -1,9 +1,9 @@
 class TasksController < ApplicationController
   before_action :require_user_logged_in
-  before_action :correct_user, only: [:update, :destroy]
+  before_action :set_task,     only: [:show, :edit, :update, :destroy]
+  before_action :correct_user, only: [:edit, :update, :destroy]
   
   def show
-    set_task
   end
    
   def new
@@ -24,11 +24,9 @@ class TasksController < ApplicationController
   end
   
   def edit
-    set_task
   end
   
   def update
-    set_task
     if @task.update(task_params)
       flash[:success] = 'タスクは正常に修正されました'
       redirect_to root_path
@@ -47,10 +45,11 @@ class TasksController < ApplicationController
   private
   
   def set_task
-    @task = current_user.tasks.find_by(id: params[:id])
-    unless @task
-      redirect_to root_path
-    end
+    # @task = current_user.tasks.find_by(id: params[:id])
+    @task = Task.find(params[:id])
+    # unless @task
+    #   redirect_to root_path
+    # end
   end
   
   def task_params
@@ -58,9 +57,10 @@ class TasksController < ApplicationController
   end
   
   def correct_user
-    @task = current_user.tasks.find_by(id: params[:id])
-    unless @task
-    redirect_to root_path
-    end
+    redirect_to root_path if @task.user_id != current_user.id
+    # @task = current_user.tasks.find_by(id: params[:id])
+    # unless @task
+    # redirect_to root_path
+    # end
   end
 end
